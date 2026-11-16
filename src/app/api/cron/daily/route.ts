@@ -17,12 +17,9 @@ export async function GET(req: Request) {
     let emailsSent = 0;
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    
-    // Dynamically get the URL
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
     for (const user of users) {
-      // BULLETPROOF CHECK: If they got an email in the last 24 hours, skip them!
       if (user.lastDigestSentAt && user.lastDigestSentAt > twentyFourHoursAgo) {
         continue; 
       }
@@ -37,7 +34,6 @@ export async function GET(req: Request) {
           text: `Hi ${user.name},\n\nHere is a quick update on your active projects with MMK:\n\n${projectList}\n\nLog in to your dashboard to view details: ${baseUrl}/dashboard\n\nBest,\nThe MMK Team`,
         });
 
-        // Remember when we emailed them
         await prisma.user.update({
           where: { id: user.id },
           data: { lastDigestSentAt: now }

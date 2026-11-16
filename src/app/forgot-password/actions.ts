@@ -9,7 +9,7 @@ export async function sendResetEmail(formData: FormData) {
     if (!email) return { success: false, error: "Email is required" };
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return { success: true }; // Fake success for security
+    if (!user) return { success: true }; 
 
     const token = crypto.randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + 1000 * 60 * 60); 
@@ -18,7 +18,6 @@ export async function sendResetEmail(formData: FormData) {
       data: { email, token, expires },
     });
 
-    // FIXED: Now uses the live URL if available
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
     const resetLink = `${baseUrl}/reset-password?token=${token}`;
 
@@ -48,6 +47,6 @@ export async function sendResetEmail(formData: FormData) {
     return { success: true };
   } catch (error) {
     console.error("Password reset error:", error);
-    return { success: false, error: "Failed to process request. Check server logs." };
+    return { success: false, error: "Failed to process request." };
   }
 }
