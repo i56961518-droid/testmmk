@@ -15,6 +15,7 @@ export async function Nav() {
 
         <nav className="hidden md:flex items-center gap-8">
           <Link href="/services" className="font-bold uppercase tracking-widest text-sm text-ink hover:underline decoration-4 underline-offset-4 decoration-magenta">Services</Link>
+          <Link href="/pricing" className="font-bold uppercase tracking-widest text-sm hover:underline decoration-4 underline-offset-4 decoration-magenta">Pricing</Link>
           <Link href="/portfolio" className="font-bold uppercase tracking-widest text-sm text-ink hover:underline decoration-4 underline-offset-4 decoration-magenta">Work</Link>
           <Link href="/about" className="font-bold uppercase tracking-widest text-sm text-ink hover:underline decoration-4 underline-offset-4 decoration-magenta">About</Link>
           <Link href="/contact" className="font-bold uppercase tracking-widest text-sm text-ink hover:underline decoration-4 underline-offset-4 decoration-magenta">Contact</Link>
