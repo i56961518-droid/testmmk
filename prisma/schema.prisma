@@ -24,6 +24,7 @@ model User {
   emailNotifications Boolean        @default(true)
   marketingEmails    Boolean        @default(false)
   twoFactorEnabled   Boolean        @default(false)
+  lastDigestSentAt   DateTime?
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
   projects           Project[]      @relation("ClientProjects")
