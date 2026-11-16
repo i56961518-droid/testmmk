@@ -1,6 +1,13 @@
 import { prisma } from "./prisma";
-import type { NotificationKind } from "@prisma/client";
-type Payload = { kind: NotificationKind; title: string; body?: string; href?: string };
+
+type Payload = { kind: string; title: string };
+
 export async function notify(userId: string, payload: Payload) {
-  await prisma.notification.create({ data: { userId, ...payload } });
+  await prisma.notification.create({
+    data: {
+      userId,
+      kind: payload.kind,
+      title: payload.title,
+    },
+  });
 }
