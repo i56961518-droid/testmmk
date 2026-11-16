@@ -24,7 +24,7 @@ export default async function DashboardPage() {
             <Link href="/" className="font-poster text-3xl tracking-tighter text-ink hover:text-magenta transition-colors">MMK</Link>
           </div>
           <nav className="px-4 space-y-1">
-            <Link href="/dashboard" className="block px-4 py-3 bg-ink/5 font-bold text-sm rounded-md">Projects</Link>
+            <Link href="/dashboard" className="block px-4 py-3 bg-ink text-paper font-bold text-sm rounded-md shadow-md">Projects</Link>
             <Link href="/dashboard/billing" className="block px-4 py-3 text-ink/60 font-medium text-sm hover:bg-ink/5 rounded-md transition-colors">Billing & Plans</Link>
             <Link href="/contact" className="block px-4 py-3 text-ink/60 font-medium text-sm hover:bg-ink/5 rounded-md transition-colors">Contact Support</Link>
             <Link href="/dashboard/settings" className="flex items-center gap-3 px-4 py-3 text-ink/60 font-medium text-sm hover:bg-ink/5 rounded-md transition-colors">
@@ -35,11 +35,11 @@ export default async function DashboardPage() {
         </div>
         <div className="p-4 border-t border-ink/10">
           <div className="px-4 mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-ink/40">Client</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Client</p>
             <p className="text-sm font-medium truncate">{session.user.email}</p>
           </div>
           <form action={handleLogout}>
-            <button className="w-full text-left px-4 py-2 text-sm font-bold text-magenta hover:bg-magenta/5 rounded-md transition-colors">Log Out</button>
+            <button className="w-full text-left px-4 py-2 text-sm font-bold text-red-500 hover:bg-red-50 rounded-md transition-colors">Log Out</button>
           </form>
         </div>
       </aside>
@@ -48,16 +48,17 @@ export default async function DashboardPage() {
       <main className="flex-1 p-8 md:p-16 max-w-6xl mx-auto w-full">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-magenta mb-2">Workspace</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mb-2">Workspace</p>
             <h1 className="font-poster text-5xl md:text-7xl uppercase leading-none text-deep">Projects</h1>
           </div>
-          <div className="flex gap-8">
+          <div className="flex gap-8 bg-paper px-6 py-4 rounded-xl border border-ink/10">
              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-1">Active</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mb-1">Active</p>
                 <p className="text-2xl font-bold">{projects.filter(p => p.status !== "COMPLETED").length}</p>
              </div>
+             <div className="w-px bg-ink/10"></div>
              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-1">Completed</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mb-1">Completed</p>
                 <p className="text-2xl font-bold">{projects.filter(p => p.status === "COMPLETED").length}</p>
              </div>
           </div>
@@ -65,15 +66,22 @@ export default async function DashboardPage() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <NewProjectForm />
+          
           {projects.map((project) => (
-            <Link href={`/dashboard/projects/${project.id}`} key={project.id} className="bg-paper border border-ink/10 p-8 flex flex-col justify-between h-56 hover:shadow-xl hover:border-ink/30 transition-all group">
+            <Link href={`/dashboard/projects/${project.id}`} key={project.id} className="bg-paper border border-ink/10 p-8 rounded-xl flex flex-col justify-between h-56 hover:shadow-xl hover:-translate-y-1 transition-all group">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-magenta mb-3">{project.status.replace(/_/g, " ")}</p>
+                <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 ${
+                  project.status === "COMPLETED" ? "bg-green-100 text-green-700" : "bg-ink/5 text-ink/60"
+                }`}>
+                  {project.status.replace(/_/g, " ")}
+                </span>
                 <h3 className="font-display text-2xl font-bold leading-tight group-hover:underline decoration-2 underline-offset-4">{project.name}</h3>
               </div>
               <div className="flex justify-between items-end border-t border-ink/10 pt-4">
                 <p className="text-xs font-medium text-ink/40">{formatDate(project.createdAt)}</p>
-                <span className="text-xl font-bold group-hover:translate-x-1 transition-transform">→</span>
+                <div className="w-8 h-8 rounded-full bg-ink/5 flex items-center justify-center group-hover:bg-ink group-hover:text-paper transition-colors">
+                  <span className="text-sm">→</span>
+                </div>
               </div>
             </Link>
           ))}

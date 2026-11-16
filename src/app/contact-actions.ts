@@ -2,6 +2,7 @@
 import nodemailer from "nodemailer";
 import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { prisma } from "@/lib/prisma";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name is too short").max(100),
@@ -10,13 +11,11 @@ const contactSchema = z.object({
 });
 
 export async function sendContactEmail(formData: FormData) {
-  // 1. Rate Limiting (using a placeholder IP for local dev, in production use headers)
   const ip = "local-user"; 
   if (!checkRateLimit(ip, 3, 60000)) {
     return { success: false, error: "Too many requests. Please wait a minute." };
   }
 
-  // 2. Validate Input
   const parsed = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -29,7 +28,6 @@ export async function sendContactEmail(formData: FormData) {
 
   const { name, email, message } = parsed.data;
 
-  // 3. Send Email
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -49,5 +47,23 @@ export async function sendContactEmail(formData: FormData) {
   } catch (error) {
     console.error("Email error:", error);
     return { success: false, error: "Failed to send. Please try again later." };
+  }
+}
+
+// ───────────────────────── NEWSLETTER ACTION ─────────────────────────
+
+export async function subscribeToNewsletter(formData: FormData) {
+  const email = formData.get("email") as string;
+  if (!email) return { success: false, error: "Email is required" };
+
+  try {
+    const existing = await prisma.subscriber.findUnique({ where: { email } });
+    if (existing) return { success: true, message: "Already subscribed!" };
+
+    await prisma.subscriber.create({ data: { email } });
+    return { success: true, message: "Thanks for subscribing!" };
+  } catch (error) {
+    console.error("Newsletter error:", error);
+    return { success: false, error: "Something went wrong." };
   }
 }

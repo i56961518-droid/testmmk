@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { NewsletterForm } from "./NewsletterForm";
+import { auth } from "@/auth";
 
-export function Footer() {
+export async function Footer() {
+  const session = await auth();
+
   return (
     <footer className="bg-ink text-paper pt-20 pb-10">
       <div className="mx-auto max-w-[1600px] px-5 md:px-10">
@@ -10,11 +13,11 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center border-b-2 border-paper/20 pb-16 mb-16 gap-8">
           <div>
             <h3 className="font-poster text-5xl uppercase">Stay Inspired.</h3>
-            <p className="text-paper/60 mt-2 text-lg">Join our newsletter for design tips and AI updates.</p>
+            <p className="text-paper/60 mt-2 text-lg">Join our newsletter for AI-generated design tips and agency updates daily.</p>
           </div>
           
-          {/* THIS IS THE FIX: The old <form> was replaced with <NewsletterForm /> */}
-          <NewsletterForm />
+          {/* Pass the logged in user's email to pre-fill the form */}
+          <NewsletterForm userEmail={session?.user?.email} />
           
         </div>
 

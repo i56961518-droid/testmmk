@@ -2,7 +2,8 @@
 import { useState } from "react";
 
 const projects = [
-  { id: 1, title: "Neon Atelier", category: "Branding", img: "https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=800&auto=format&fit=crop" },
+  // CHANGED IMAGE 1 TO A BRIGHT, BEAUTIFUL AESTHETIC IMAGE
+  { id: 1, title: "Neon Atelier", category: "Branding", img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop" },
   { id: 2, title: "Pulse Athletics", category: "Social Media", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" },
   { id: 3, title: "Bloom Skincare", category: "Campaign", img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop" },
   { id: 4, title: "Harmonic Audio", category: "Branding", img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=800&auto=format&fit=crop" },
@@ -21,7 +22,6 @@ export default function PortfolioPage() {
       <div className="max-w-[1600px] mx-auto">
         <h1 className="font-poster text-[15vw] md:text-[10rem] leading-[0.8] uppercase mb-12 text-deep">The Work</h1>
         
-        {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-16 border-b-2 border-ink/10 pb-8">
           {categories.map(cat => (
             <button 
@@ -34,7 +34,6 @@ export default function PortfolioPage() {
           ))}
         </div>
 
-        {/* Grid */}
         <div className="grid md:grid-cols-2 gap-8">
           {filteredProjects.map((project) => (
             <div key={project.id} className="group relative cursor-pointer overflow-hidden border-2 border-ink bg-deep aspect-square">

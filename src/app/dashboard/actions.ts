@@ -40,8 +40,10 @@ export async function createProject(formData: FormData) {
 
     revalidatePath("/dashboard");
     return { success: true };
-  } catch (error) {
-    return { success: false, error: "Failed to create project." };
+  } catch (error: any) {
+    // This will print the exact database error in your Vercel logs if it fails
+    console.error("PROJECT CREATE ERROR:", error);
+    return { success: false, error: error.message || "Failed to create project." };
   }
 }
 
@@ -95,6 +97,35 @@ export async function addComment(formData: FormData) {
 
   revalidatePath(`/dashboard/projects/${projectId}`);
   return { success: true };
+}
+
+/* ───────────────────────── NEW REVISION ACTION ───────────────────────── */
+
+export async function requestRevision(projectId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+
+  try {
+    await prisma.project.update({
+      where: { id: projectId, clientId: session.user.id },
+      data: { status: "REVISION_REQUESTED" },
+    });
+    
+    await prisma.comment.create({
+      data: {
+        projectId,
+        authorId: session.user.id,
+        text: "Client requested a revision via the dashboard.",
+      },
+    });
+
+    revalidatePath(`/dashboard/projects/${projectId}`);
+    revalidatePath("/admin");
+    revalidatePath("/admin/projects");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Failed to request revision." };
+  }
 }
 
 /* ───────────────────────── SETTINGS ACTIONS ───────────────────────── */
@@ -209,9 +240,8 @@ export async function requestDeleteAccount(formData: FormData) {
   if (!isValid) return { success: false, error: "Incorrect password." };
 
   if (user.twoFactorEnabled) {
-    // Generate secure token for email confirmation
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = new Date(Date.now() + 1000 * 60 * 15); // 15 minutes
+    const expires = new Date(Date.now() + 1000 * 60 * 15);
 
     await prisma.passwordResetToken.create({
       data: { email: user.email, token, expires },
@@ -219,7 +249,6 @@ export async function requestDeleteAccount(formData: FormData) {
 
     const confirmLink = `http://localhost:3000/delete-account?token=${token}`;
 
-    // Send Email
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
@@ -242,7 +271,6 @@ export async function requestDeleteAccount(formData: FormData) {
 
     return { success: true, message: "Confirmation email sent. Please check your inbox to finalize deletion." };
   } else {
-    // 2FA off, delete immediately
     await prisma.user.delete({ where: { id: user.id } });
     return { success: true, deleted: true };
   }
