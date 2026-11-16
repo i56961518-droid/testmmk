@@ -14,13 +14,13 @@ export function MobileMenu({ session }: { session: any }) {
       {isOpen && (
         <div className="fixed inset-0 bg-deep text-paper z-40 flex flex-col justify-center items-center gap-6 px-10 overflow-y-auto">
           <Link href="/services" onClick={() => setIsOpen(false)} className="font-poster text-4xl uppercase hover:text-magenta transition-colors">Services</Link>
+          
+          {/* This is now public for everyone to see */}
+          <Link href="/pricing" onClick={() => setIsOpen(false)} className="font-poster text-4xl uppercase hover:text-magenta transition-colors">Pricing</Link>
+          
           <Link href="/portfolio" onClick={() => setIsOpen(false)} className="font-poster text-4xl uppercase hover:text-magenta transition-colors">Work</Link>
           <Link href="/about" onClick={() => setIsOpen(false)} className="font-poster text-4xl uppercase hover:text-magenta transition-colors">About</Link>
           <Link href="/contact" onClick={() => setIsOpen(false)} className="font-poster text-4xl uppercase hover:text-magenta transition-colors">Contact</Link>
-          
-          {session?.user && (
-             <Link href="/dashboard/billing" onClick={() => setIsOpen(false)} className="font-poster text-4xl uppercase hover:text-magenta transition-colors">Billing</Link>
-          )}
           
           <div className="w-16 h-1 bg-paper/20 my-4"></div>
 
