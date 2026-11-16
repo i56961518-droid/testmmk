@@ -247,7 +247,9 @@ export async function requestDeleteAccount(formData: FormData) {
       data: { email: user.email, token, expires },
     });
 
-    const confirmLink = `http://localhost:3000/delete-account?token=${token}`;
+    // FIXED: Now uses the live URL if available, falls back to localhost for development
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const confirmLink = `${baseUrl}/delete-account?token=${token}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",

@@ -14,17 +14,17 @@ export async function sendResetEmail(formData: FormData) {
     const token = crypto.randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + 1000 * 60 * 60); 
 
-    // Save token to DB
     await prisma.passwordResetToken.create({
       data: { email, token, expires },
     });
 
-    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+    // FIXED: Now uses the live URL if available
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const resetLink = `${baseUrl}/reset-password?token=${token}`;
 
-    // Check if email credentials exist
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       console.warn("EMAIL CREDENTIALS MISSING. Reset Link:", resetLink);
-      return { success: true }; // Return success so UI doesn't break, but log the link
+      return { success: true }; 
     }
 
     const transporter = nodemailer.createTransport({

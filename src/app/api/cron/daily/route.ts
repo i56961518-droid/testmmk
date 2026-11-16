@@ -17,6 +17,9 @@ export async function GET(req: Request) {
     let emailsSent = 0;
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    
+    // Dynamically get the URL
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
     for (const user of users) {
       // BULLETPROOF CHECK: If they got an email in the last 24 hours, skip them!
@@ -31,7 +34,7 @@ export async function GET(req: Request) {
           from: process.env.EMAIL_USER,
           to: user.email,
           subject: "Your Daily MMK Project Update",
-          text: `Hi ${user.name},\n\nHere is a quick update on your active projects with MMK:\n\n${projectList}\n\nLog in to your dashboard to view details: https://testmmk.vercel.app/dashboard\n\nBest,\nThe MMK Team`,
+          text: `Hi ${user.name},\n\nHere is a quick update on your active projects with MMK:\n\n${projectList}\n\nLog in to your dashboard to view details: ${baseUrl}/dashboard\n\nBest,\nThe MMK Team`,
         });
 
         // Remember when we emailed them
